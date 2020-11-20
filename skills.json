@@ -1,1 +1,441 @@
-teste
+{
+  "intents": [
+    {
+      "intent": "cotacao",
+      "examples": [
+        {
+          "text": "ação"
+        },
+        {
+          "text": "ações"
+        },
+        {
+          "text": "ativo"
+        },
+        {
+          "text": "consultar ação"
+        },
+        {
+          "text": "consultar ativo"
+        },
+        {
+          "text": "cotação"
+        },
+        {
+          "text": "cotação ações"
+        },
+        {
+          "text": "derivativo"
+        },
+        {
+          "text": "opção"
+        },
+        {
+          "text": "opçoes"
+        },
+        {
+          "text": "preço"
+        },
+        {
+          "text": "valor"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "despedida",
+      "examples": [
+        {
+          "text": "adeus"
+        },
+        {
+          "text": "era somente isto"
+        },
+        {
+          "text": "foi o suficiente"
+        },
+        {
+          "text": "não desejo nada mais"
+        },
+        {
+          "text": "obrigado pela informção"
+        },
+        {
+          "text": "tchau"
+        },
+        {
+          "text": "tenha uma boa noite"
+        },
+        {
+          "text": "tenha uma boa tarde"
+        },
+        {
+          "text": "tenha um bom dia"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "info",
+      "examples": [
+        {
+          "text": "info chatbot"
+        }
+      ],
+      "description": ""
+    },
+    {
+      "intent": "saudacao",
+      "examples": [
+        {
+          "text": "boa noite"
+        },
+        {
+          "text": "boa tarde"
+        },
+        {
+          "text": "bom dia"
+        },
+        {
+          "text": "oi"
+        },
+        {
+          "text": "oieeee!"
+        },
+        {
+          "text": "olá"
+        },
+        {
+          "text": "tudo bem?"
+        }
+      ],
+      "description": ""
+    }
+  ],
+  "entities": [
+    {
+      "entity": "sys-currency",
+      "values": []
+    },
+    {
+      "entity": "sys-date",
+      "values": []
+    },
+    {
+      "entity": "sys-number",
+      "values": []
+    },
+    {
+      "entity": "sys-percentage",
+      "values": []
+    },
+    {
+      "entity": "sys-time",
+      "values": []
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "webhooks": [
+    {
+      "url": "https://us-south.functions.appdomain.cloud/api/v1/web/marcusabreu86%40gmail.com_dev/default/cotacao.json",
+      "name": "main_webhook",
+      "headers": []
+    }
+  ],
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "á tudo bem. Sou o ajudante de cotações de ações listados nas bolsas de valores ao redor do globo.\nEm que posso ajudar?\nDúvidas sobre como proceder digite:\ninfo chatbot."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "actions": [
+        {
+          "name": "search",
+          "type": "client",
+          "parameters": {
+            "termo": "<? input.text ?>"
+          },
+          "result_variable": "resposta"
+        }
+      ],
+      "conditions": "welcome",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Eu não entendi. Se desejar saber cotação de uma ação digite: consultar ação.\nOutras dúvidas digite: info."
+              },
+              {
+                "text": "Desculpa não entendi. Se desejar saber cotação de uma ação digite: consultar ação.\nOutras dúvidas digite: info."
+              },
+              {
+                "text": "Eu não entendi o sentido. Se desejar saber cotação de uma ação digite: consultar ação.\nOutras dúvidas digite: info."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_4_1605839453419",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "standard",
+      "title": "get_busca",
+      "parent": "node_6_1605673669357",
+      "actions": [
+        {
+          "name": "main_webhook",
+          "type": "webhook",
+          "parameters": {
+            "acao": "<? input.text ?>",
+            "passo": "primeiro"
+          },
+          "result_variable": "webhook_result_1"
+        }
+      ],
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "conditions": "true",
+      "dialog_node": "node_1_1605673737811",
+      "previous_sibling": "response_7_1605897080938"
+    },
+    {
+      "type": "standard",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Este chatbot retorna a data da última transação de uma ação, assim como seu valor,\nvolume de ações negociadas e preço do fechamento anterior.\n----------\nA consulta funciona em três passo primeiro é necessário sinalizar ao chatbot o desejo\nde saber a cotação de uma ativo, depois digitar um ativo que deseja\nconsultar então é feita uma busca na API Alphavantagem de ativos como nomes similares\nentão é preciso escolher um da lista de confirmação retornada \n-----------\nSe você tiver dúvidas sobre nome dos ativos brasileiros sugiro consultar:\nhttps://br.advfn.com/bolsa-de-valores/bovespa/A\n------------\nInfamação sobre o chatbot:\nGithub a fazer."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#info",
+      "dialog_node": "node_4_1605839453419",
+      "previous_sibling": "node_6_1605229722406"
+    },
+    {
+      "type": "standard",
+      "title": "saudacao",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá tudo bem. Sou o ajudante de cotações de ações listados nas bolsas de valores ao redor do globo.\nEm que posso ajudar?\nDúvidas sobre como proceder digite:\ninfo chatbot."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#saudacao",
+      "dialog_node": "node_5_1605229511100",
+      "previous_sibling": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "get_cotacao",
+      "parent": "node_1_1605673737811",
+      "actions": [
+        {
+          "name": "main_webhook",
+          "type": "webhook",
+          "parameters": {
+            "acao": "<? input.text ?>",
+            "passo": "segundo"
+          },
+          "result_variable": "webhook_result_1"
+        }
+      ],
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "conditions": "true",
+      "dialog_node": "node_5_1605755917650"
+    },
+    {
+      "type": "standard",
+      "title": "despedida",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Prazer de ajudar.\nTchau tchau!!!"
+              },
+              {
+                "text": "Volte sempre.\nBye bye!!!"
+              },
+              {
+                "text": "Estou a disposição.\nAté mais!!!"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "#despedida",
+      "dialog_node": "node_6_1605229722406",
+      "previous_sibling": "node_6_1605673669357"
+    },
+    {
+      "type": "standard",
+      "title": "busca",
+      "metadata": {
+        "_customization": {
+          "mcr": true
+        }
+      },
+      "conditions": "#cotacao",
+      "dialog_node": "node_6_1605673669357",
+      "previous_sibling": "node_5_1605229511100"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "$webhook_result_1.text_segundo\n-----------\nDeseja saber cotação de outra ação digite: consultar ação"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_5_1605755917650",
+      "conditions": "$webhook_result_1",
+      "dialog_node": "response_10_1605755933834"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "$webhook_result_1.text_primeiro"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_1_1605673737811",
+      "context": {},
+      "conditions": "$webhook_result_1",
+      "dialog_node": "response_2_1605673755359",
+      "previous_sibling": "node_5_1605755917650"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Para consultar um ação preciso fazer uma busca de nomes relacionados. \nPor favor digite o nome da ação que deseja a consultar."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_6_1605673669357",
+      "context": {},
+      "dialog_node": "response_2_1605674546715"
+    },
+    {
+      "type": "response_condition",
+      "parent": "node_5_1605755917650",
+      "conditions": "anything_else",
+      "dialog_node": "response_5_1605755935577",
+      "previous_sibling": "response_10_1605755933834"
+    },
+    {
+      "type": "response_condition",
+      "output": {
+        "generic": [
+          {
+            "values": [],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_6_1605673669357",
+      "dialog_node": "response_7_1605897080938",
+      "previous_sibling": "response_2_1605674546715"
+    },
+    {
+      "type": "response_condition",
+      "parent": "node_1_1605673737811",
+      "conditions": "anything_else",
+      "dialog_node": "response_8_1605673757108",
+      "previous_sibling": "response_2_1605673755359"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Você quis dizer:",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "Nenhuma das anteriores"
+    },
+    "system_entities": {
+      "enabled": true
+    },
+    "human_agent_assist": {
+      "prompt": "Você quis dizer:"
+    }
+  },
+  "learning_opt_out": false,
+  "name": "Cotações",
+  "language": "pt-br",
+  "description": ""
+}
